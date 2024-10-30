@@ -1,15 +1,21 @@
- 
+
 package listacircular;
 import java.io.*;
 class nodo {
-    int dato;
+    String dato;
     nodo sig;
-    nodo(int pnum) {
-        this.dato=pnum;
+    nodo ant;
+    nodo(String letra) {
+        this.dato=letra;
     }
-    nodo(int pnum, nodo L) {
-        this.dato = pnum;
+    nodo(String letra, nodo L) {
+        this.dato = letra;
         this.sig = L;
+    }
+    nodo(String letra, nodo L, nodo ant) {
+        this.dato = letra;
+        this.sig = L;
+        this.ant = ant;
     }
 }
 
@@ -18,28 +24,56 @@ class nodo {
 class lista{
     nodo L;
     nodo aux;
-    
-   void agregar(int pnum) {       
+
+   void agregar(String letra) {
        if (L==null){
-           L=new nodo(pnum);
+           L=new nodo(letra);
            L.sig=L;
        }else{
            aux=L;
            while(aux.sig!=L)
                aux=aux.sig;
-           aux.sig=new nodo(pnum, L);
+           aux.sig=new nodo(letra, L);
+       }
+   }
+   void agregarPalabra(String palabra) {
+       String[] letras = palabra.split("");
+       for (int i = 0; i < letras.length; i++) {
+            if (L==null){
+                L=new nodo(letras[i]);
+                L.sig=L;
+                L.ant=L;
+            }else{
+                aux=L;
+                while(aux.sig!=L){
+                    aux=aux.sig;
+                }
+                aux.sig=new nodo(letras[i], L, aux);
+                L.ant = aux.sig;
+            }
        }
    }
     void mostrar (){
         aux=L;
         String dat="";
         while (aux.sig!=L){
-            dat=dat+aux.dato+",";
+            dat=dat+aux.dato;
             aux=aux.sig;
         }
-        dat=dat+aux.dato+", ";
+        dat=dat+aux.dato;
         System.out.print("L-->"+dat);
-}
+    }
+    void mostrarInversa (){
+        aux=L.ant;
+        nodo ultimo = aux;
+        String dat="";
+        while (aux.ant!=ultimo){
+            dat=dat+aux.dato;
+            aux=aux.ant;
+        }
+        dat=dat+aux.dato;
+        System.out.print("L-->"+dat);
+    }
     void eliminar(int valor){
         aux=L;
         nodo aux2 = null;
@@ -62,8 +96,8 @@ class lista{
             System.out.println("valor no encontrado en la lista");
         }
     }
-    
-    
+
+
     void buscar(int valor){
         aux=L;
         if(aux!=null){
@@ -79,21 +113,20 @@ class lista{
 }
 public class ListaCircular {
 
-    
+
     public static void main(String[] args) throws IOException{
         InputStreamReader sr=new InputStreamReader(System.in);
         BufferedReader br=new BufferedReader(sr);
         lista ls=new lista();
         char op='s';
         while (op!='n'){
-            System.out.print("numero a listar");
-            ls.agregar(Integer.parseInt(br.readLine()));
-            System.out.print("¿Otro número (s/n): ");
+            System.out.println("ingrese la palabra a registrar");
+            ls.agregarPalabra(br.readLine());
+            System.out.println("¿algo mas que ingresar? (s/n): ");
             op=br.readLine().charAt(0);
-            
-            
         }
         ls.mostrar();
+        ls.mostrarInversa();
         System.out.println();
     }
 }
